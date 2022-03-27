@@ -22,7 +22,7 @@ func InitRouter() *mux.Router {
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := data.GetBlogPosts()
 	if err != nil {
-		w.WriteHeader(500)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 
 	j, err := json.Marshal(&posts)
@@ -39,7 +39,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	j := make([]byte, r.ContentLength)
 	j, err = ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(500)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 	defer r.Body.Close()
 
@@ -48,13 +48,13 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(j, &post)
 	if err != nil {
-		w.WriteHeader(500)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 
 	//сохраним пост в БД
 	err = post.Save()
 	if err != nil {
-		w.WriteHeader(500)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 
 	w.WriteHeader(200)
