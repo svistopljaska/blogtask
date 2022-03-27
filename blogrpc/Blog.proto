@@ -1,0 +1,33 @@
+syntax = "proto3";
+package blogrpc;
+
+option go_package = "blogtask/blogrpc";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service Blog {
+  rpc getPosts(google.protobuf.Empty) returns (Posts);
+  rpc createPost(Post) returns (PostId);
+}
+
+message Posts {
+  repeated Post posts = 1;
+}
+
+message Post {
+  optional int64 id = 1;
+  string title = 2;
+  string content = 3;
+  repeated Tag tags = 4;
+  optional google.protobuf.Timestamp createdon = 5;
+  string author = 6;
+}
+
+message PostId {
+  int64 id = 1;
+}
+
+message Tag {
+  optional int64 id = 1;
+  string name = 2;
+}
