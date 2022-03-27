@@ -148,7 +148,7 @@ func (post *BlogPost) Save() (err error) {
 
 	//Сохраним теги
 	for _, tag := range post.Tags {
-		err = tag.Save()
+		err = tag.save()
 		if err != nil {
 			terr := tx.Rollback()
 			if terr != nil {
@@ -194,8 +194,8 @@ func (post *BlogPost) Save() (err error) {
 
 //Методы CRUD для тега
 
-//Save метод сохранения тега. Идемпотентный.
-func (t *Tag) Save() error {
+//save метод сохранения тега. Идемпотентный.
+func (t *Tag) save() error {
 	row := Db.QueryRow("select id from public.tags where name = $1", t.Name)
 	err := row.Scan(&t.Id)
 	if err != nil {
