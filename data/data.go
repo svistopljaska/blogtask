@@ -30,7 +30,7 @@ type BlogPost struct {
 
 //Tag Структура для хранения информации о тэге поста
 type Tag struct {
-	Id   string
+	Id   int64
 	Name string
 }
 
