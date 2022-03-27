@@ -25,12 +25,15 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	j, err := json.Marshal(&posts)
 
 	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(j)
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	//прочитаем тело запроса
-	j, err := ioutil.ReadAll(r.Body)
+	var err error
+	j := make([]byte, r.ContentLength)
+	j, err = ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(500)
 	}
