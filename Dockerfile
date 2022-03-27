@@ -1,4 +1,4 @@
-FROM golang:1.18-bullseye
+FROM golang:1.18-bullseye as build
 
 ADD . /usr/local/go/src/blogtask
 WORKDIR /usr/local/go/src/blogtask
@@ -10,13 +10,17 @@ RUN go mod download
 COPY . .
 
 
-COPY *.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -o blogapp
 
-RUN go build -o /blogapp
+FROM scratch
+
+COPY --from=build /usr/local/go/src/blogtask/blogapp .
 
 ENV pguser="postgres"
 ENV pguserpassword="postgres"
 ENV pgname="postgres"
 
-EXPOSE 8000
+EXPOSE 80
+
 CMD [ "/blogapp" ]
+
