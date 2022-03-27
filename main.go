@@ -1,7 +1,7 @@
 package main
 
 import (
-	"blogtask/api"
+	"github.com/svistopljaska/blogtask/api"
 	"net/http"
 	"time"
 )

@@ -2,9 +2,9 @@
 package api
 
 import (
-	"blogtask/data"
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/svistopljaska/blogtask/data"
 	"io/ioutil"
 	"net/http"
 )
