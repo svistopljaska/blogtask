@@ -58,7 +58,7 @@ func init() {
 //GetBlogPosts метод для получения всех постов из БД
 func GetBlogPosts() (posts []BlogPost, err error) {
 
-	rows, err := Db.Query("SELECT id, title, content, author, createdon FROM public.posts")
+	rows, err := Db.Query("SELECT id, title, content, author, createdon FROM public.posts ORDER BY createdon")
 	if err != nil {
 		return
 	}
