@@ -81,7 +81,7 @@ type UnsafeBlogServer interface {
 	mustEmbedUnimplementedBlogServer()
 }
 
-func RegisterBlogServer(s grpc.ServiceRegistrar, srv BlogServer) {
+func RegisterBlogServer(s grpc.ServiceRegistrar, srv interface{}) {
 	s.RegisterService(&Blog_ServiceDesc, srv)
 }
 
