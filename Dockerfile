@@ -3,11 +3,8 @@ FROM golang:1.18-bullseye as build
 ADD . /usr/local/go/src/blogtask
 WORKDIR /usr/local/go/src/blogtask
 
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
-
 COPY . .
+RUN go mod download
 
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o blogapp
