@@ -1,3 +1,4 @@
+//Пакет представляет собой набор хэндлеров входящих запросов и регистрирует роуты
 package api
 
 import (
@@ -8,6 +9,7 @@ import (
 	"net/http"
 )
 
+//InitRouter производит первоначальное сопостовление роутов и хэндлеров
 func InitRouter() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/posts", GetPosts).Methods("GET")
@@ -16,6 +18,7 @@ func InitRouter() *mux.Router {
 	return router
 }
 
+//GetPosts обрабатывает входящий запрос на получение списка постов
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := data.GetBlogPosts()
 	if err != nil {
@@ -29,6 +32,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+//CreatePost обрабатывает запрос на сохранение нового поста
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	//прочитаем тело запроса
 	var err error
