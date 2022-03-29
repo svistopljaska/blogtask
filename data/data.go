@@ -148,19 +148,15 @@ func (post *BlogPost) Save() (err error) {
 
 	//Сохраним теги
 	for _, tag := range post.Tags {
-		err = tag.save()
+		err = tag.safesave(tx)
 		if err != nil {
-			terr := tx.Rollback()
-			if terr != nil {
-				return terr
-			}
 			return err
 		}
 	}
 
 	//Сохраним пост
 	post.CreatedOn = time.Now()
-	row := Db.QueryRow("insert into posts(title, content, author, createdon) values ($1,$2,$3,$4) returning id",
+	row := tx.QueryRow("insert into posts(title, content, author, createdon) values ($1,$2,$3,$4) returning id",
 		post.Title, post.Content, post.Author, post.CreatedOn)
 
 	err = row.Scan(&post.Id)
@@ -175,7 +171,7 @@ func (post *BlogPost) Save() (err error) {
 	//Сохраним связь между постом и тегами
 	for _, tag := range post.Tags {
 		var i int
-		row = Db.QueryRow("insert into i_post_tags(id_post, id_tag) values($1, $2) returning id", post.Id, tag.Id)
+		row = tx.QueryRow("insert into i_post_tags(id_post, id_tag) values($1, $2) returning id", post.Id, tag.Id)
 		err = row.Scan(&i)
 		if err != nil {
 			terr := tx.Rollback()
@@ -207,6 +203,26 @@ func (t *Tag) save() error {
 			}
 			return nil
 		} else {
+			return err
+		}
+	}
+	return nil
+}
+
+func (t *Tag) safesave(tx *sql.Tx) error {
+	row := Db.QueryRow("select id from public.tags where name = $1", t.Name)
+	err := row.Scan(&t.Id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			insertrow := tx.QueryRow("insert into public.tags (name) values ($1) returning id", t.Name)
+			err = insertrow.Scan(&t.Id)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		} else {
+			tx.Rollback()
 			return err
 		}
 	}
